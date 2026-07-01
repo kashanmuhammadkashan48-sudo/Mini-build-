@@ -1,78 +1,101 @@
-import React, { useState, useEffect, useRef } from 'react';
-import ChatInterface from './components/ChatInterface';
+import React, { useState } from 'react';
 import Sidebar from './components/Sidebar';
-import './styles/App.css';
+import ChatWindow from './components/ChatWindow';
+import WeatherDashboard from './components/WeatherDashboard';
+import './App.css';
 
 function App() {
-  const [conversations, setConversations] = useState([]);
+  const [conversations, setConversations] = useState(() => {
+    const saved = localStorage.getItem('conversations');
+    return saved ? JSON.parse(saved) : [];
+  });
   const [currentConversation, setCurrentConversation] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [activeTab, setActiveTab] = useState('chat'); // 'chat' or 'weather'
 
-  useEffect(() => {
-    const saved = localStorage.getItem('conversations');
-    if (saved) {
-      setConversations(JSON.parse(saved));
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('conversations', JSON.stringify(conversations));
-  }, [conversations]);
-
-  const startNewConversation = () => {
-    const newConversation = {
-      id: Date.now(),
-      title: 'New Chat',
-      messages: [],
-      memory: [],
-      createdAt: new Date()
-    };
-    setConversations([newConversation, ...conversations]);
-    setCurrentConversation(newConversation.id);
+  const saveConversations = (convs) => {
+    localStorage.setItem('conversations', JSON.stringify(convs));
   };
 
-  const selectConversation = (id) => {
+  const handleNewConversation = () => {
+    const newConv = {
+      id: Date.now(),
+      title: `Chat ${conversations.length + 1}`,
+      messages: [],
+      createdAt: new Date().toISOString(),
+    };
+    const newConversations = [newConv, ...conversations];
+    setConversations(newConversations);
+    setCurrentConversation(newConv.id);
+    saveConversations(newConversations);
+  };
+
+  const handleDeleteConversation = (id) => {
+    const newConversations = conversations.filter(conv => conv.id !== id);
+    setConversations(newConversations);
+    saveConversations(newConversations);
+    if (currentConversation === id) {
+      setCurrentConversation(newConversations.length > 0 ? newConversations[0].id : null);
+    }
+  };
+
+  const handleSelectConversation = (id) => {
     setCurrentConversation(id);
   };
 
-  const updateConversation = (updatedConv) => {
-    setConversations(conversations.map(c => c.id === updatedConv.id ? updatedConv : c));
+  const handleSendMessage = (message) => {
+    if (!currentConversation) return;
+
+    const newConversations = conversations.map(conv => {
+      if (conv.id === currentConversation) {
+        return {
+          ...conv,
+          messages: [...conv.messages, message],
+        };
+      }
+      return conv;
+    });
+    setConversations(newConversations);
+    saveConversations(newConversations);
   };
 
-  const deleteConversation = (id) => {
-    setConversations(conversations.filter(c => c.id !== id));
-    if (currentConversation === id) {
-      setCurrentConversation(conversations.length > 0 ? conversations[0].id : null);
-    }
-  };
-
-  const activeConversation = conversations.find(c => c.id === currentConversation);
+  const currentConv = conversations.find(conv => conv.id === currentConversation);
 
   return (
-    <div className="app-container">
+    <div className="app">
       <Sidebar
         conversations={conversations}
         currentConversation={currentConversation}
-        onSelectConversation={selectConversation}
-        onNewConversation={startNewConversation}
-        onDeleteConversation={deleteConversation}
+        onSelectConversation={handleSelectConversation}
+        onNewConversation={handleNewConversation}
+        onDeleteConversation={handleDeleteConversation}
         isOpen={sidebarOpen}
         onToggle={() => setSidebarOpen(!sidebarOpen)}
       />
       <main className="main-content">
-        {activeConversation ? (
-          <ChatInterface
-            conversation={activeConversation}
-            onUpdateConversation={updateConversation}
+        <div className="tab-buttons">
+          <button
+            className={`tab-btn ${activeTab === 'chat' ? 'active' : ''}`}
+            onClick={() => setActiveTab('chat')}
+          >
+            💬 Chat
+          </button>
+          <button
+            className={`tab-btn ${activeTab === 'weather' ? 'active' : ''}`}
+            onClick={() => setActiveTab('weather')}
+          >
+            🌤️ Weather
+          </button>
+        </div>
+
+        {activeTab === 'chat' ? (
+          <ChatWindow
+            conversation={currentConv}
+            onSendMessage={handleSendMessage}
+            onNewChat={handleNewConversation}
           />
         ) : (
-          <div className="empty-state">
-            <h1>Mini Build</h1>
-            <p>Your AI Assistant powered by Google Gemini</p>
-            <button className="btn btn-primary" onClick={startNewConversation}>
-              Start New Chat
-            </button>
-          </div>
+          <WeatherDashboard />
         )}
       </main>
     </div>
