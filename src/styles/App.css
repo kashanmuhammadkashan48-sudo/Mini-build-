@@ -1,0 +1,49 @@
+.app-container {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding: 40px;
+  text-align: center;
+}
+
+.empty-state h1 {
+  font-size: 48px;
+  background: linear-gradient(135deg, #00d9ff, #0099cc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 10px;
+  animation: glow 3s ease-in-out infinite;
+}
+
+.empty-state p {
+  font-size: 16px;
+  color: #a0a0a0;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .app-container {
+    flex-direction: column;
+  }
+
+  .empty-state h1 {
+    font-size: 32px;
+  }
+}
