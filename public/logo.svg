@@ -1,0 +1,59 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="neon-glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <style>
+      .eagle-stroke {
+        stroke: #00d9ff;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .eagle-fill {
+        fill: #00d9ff;
+      }
+    </style>
+  </defs>
+  
+  <!-- Neon Glow Background Circle -->
+  <circle cx="100" cy="100" r="95" fill="none" stroke="#00d9ff" stroke-width="1" opacity="0.2" filter="url(#neon-glow)"/>
+  
+  <!-- Main Eagle Group -->
+  <g filter="url(#neon-glow)">
+    <!-- Left Horseshoe Arc -->
+    <path d="M 60 160 Q 50 130 55 90 Q 60 70 80 65" class="eagle-stroke"/>
+    <path d="M 65 165 Q 58 140 62 100 Q 65 75 82 68" class="eagle-stroke"/>
+    
+    <!-- Right Horseshoe Arc -->
+    <path d="M 140 160 Q 150 130 145 90 Q 140 70 120 65" class="eagle-stroke"/>
+    <path d="M 135 165 Q 142 140 138 100 Q 135 75 118 68" class="eagle-stroke"/>
+    
+    <!-- Left Wing Feathers -->
+    <path d="M 70 145 Q 45 135 35 110" class="eagle-stroke"/>
+    <path d="M 65 155 Q 38 148 25 125" class="eagle-stroke"/>
+    <path d="M 75 160 Q 50 152 38 130" class="eagle-stroke"/>
+    <path d="M 60 150 Q 35 142 22 115" class="eagle-stroke"/>
+    
+    <!-- Right Wing Feathers -->
+    <path d="M 130 145 Q 155 135 165 110" class="eagle-stroke"/>
+    <path d="M 135 155 Q 162 148 175 125" class="eagle-stroke"/>
+    <path d="M 125 160 Q 150 152 162 130" class="eagle-stroke"/>
+    <path d="M 140 150 Q 165 142 178 115" class="eagle-stroke"/>
+    
+    <!-- Eagle Head -->
+    <circle cx="100" cy="60" r="8" class="eagle-fill"/>
+    
+    <!-- Eagle Eye -->
+    <circle cx="100" cy="58" r="3" fill="#0a0e27"/>
+    
+    <!-- Top Jewel Points -->
+    <circle cx="75" cy="50" r="3.5" class="eagle-fill"/>
+    <circle cx="125" cy="50" r="3.5" class="eagle-fill"/>
+  </g>
+</svg>
